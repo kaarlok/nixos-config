@@ -29,6 +29,12 @@
       url = "github:nix-community/stylix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    autolith = {
+      url = "github:lambda-symbolics/autolith";
+      # Intentionally NOT following our nixpkgs: autolith asserts its exact
+      # pinned SBCL (sbcl.version = 2.6.6) against the nixpkgs it is built
+      # with, and our nixpkgs unstable ships 2.6.8, which fails that assert.
+    };
   };
 
   outputs =
@@ -39,6 +45,7 @@
       quickshell,
       firefox-addons,
       stylix,
+      autolith,
       ...
     }:
     {

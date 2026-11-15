@@ -36,6 +36,32 @@
   networking.networkmanager.enable = true;
   nixpkgs.config.allowUnfree = true; # for the nvidia drivers
 
+  # This machine has no disk swap (see hardware-configuration.nix). Without swap
+  # the kernel cannot evict anonymous pages, so a memory spike (e.g. indexing the
+  # 50 GB nix store) drives every allocation into direct reclaim: the whole
+  # system crawls at a fraction of a frame per second, even the TTY login cannot
+  # come up, and no OOM killer fires because threads stay runnable. zram gives
+  # the kernel somewhere to put cold anonymous pages so it can keep running.
+  zramSwap = {
+    enable = true;
+    memoryPercent = 50; # up to 8 GiB of compressed swap in RAM
+    algorithm = "zstd";
+    priority = 5;
+  };
+
+  # oomd does not manage user.slice by default, so a runaway user process that
+  # exhausts memory is never killed and can only be recovered with a hard reset.
+  # Let it reclaim from user slices as well.
+  systemd.oomd = {
+    enableSystemSlice = true;
+    enableUserSlices = true;
+  };
+
+  # sysrq is 16 (sync only) here, which makes REISUB impossible. With REISUB a
+  # wedged session can at least remount filesystems read-only and reboot cleanly
+  # rather than losing the tail of the journal to a hard reset.
+  boot.kernel.sysctl."kernel.sysrq" = 1;
+
   # Set your time zone.
   time.timeZone = "Europe/Helsinki";
 
@@ -147,10 +173,16 @@
     substituters = [
       "https://fenix.cachix.org"
       "https://cache.nixos.org/"
+      # autolith's flake advertises symbolics as its cache, and some of autolith's
+      # paths (defingerprinter, fff-c) exist only there. Listing it here instead
+      # of relying on the flake's own nixConfig makes it usable for unprivileged
+      # user builds — a non-trusted user's extra-substituters is ignored.
+      "https://symbolics.cachix.org"
     ];
     trusted-public-keys = [
       "fenix.cachix.org-1:ecJhr+RdYEdcVgUkjruiYhjbBloIEGov7bos90cZi0Q="
       "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
+      "symbolics.cachix.org-1:Wdgpxequ4fzP4FAckIf4MqMG9OpNxWz6CttNwiGf4AI="
     ];
   };
 }

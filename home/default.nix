@@ -13,6 +13,7 @@
     ./modules/latex.nix
     ./modules/librewolf.nix
     ./modules/theme.nix
+    ./modules/autolith.nix
   ];
 
   home.stateVersion = "26.05";

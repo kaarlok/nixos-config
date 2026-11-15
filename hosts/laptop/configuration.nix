@@ -157,10 +157,16 @@
     substituters = [
       "https://fenix.cachix.org"
       "https://cache.nixos.org/"
+      # autolith's flake advertises symbolics as its cache, and some of autolith's
+      # paths (defingerprinter, fff-c) exist only there. Listing it here instead
+      # of relying on the flake's own nixConfig makes it usable for unprivileged
+      # user builds — a non-trusted user's extra-substituters is ignored.
+      "https://symbolics.cachix.org"
     ];
     trusted-public-keys = [
       "fenix.cachix.org-1:ecJhr+RdYEdcVgUkjruiYhjbBloIEGov7bos90cZi0Q="
       "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
+      "symbolics.cachix.org-1:Wdgpxequ4fzP4FAckIf4MqMG9OpNxWz6CttNwiGf4AI="
     ];
   };
 }
