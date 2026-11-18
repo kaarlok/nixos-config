@@ -24,6 +24,7 @@
     gdb
     # lldb
     vscode-extensions.vadimcn.vscode-lldb # provides codelldb
+    claude-code
 
     go
     gopls
