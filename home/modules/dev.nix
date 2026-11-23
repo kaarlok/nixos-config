@@ -43,6 +43,8 @@
     gofumpt
     pyright
 
+    nodejs
+
     zig
     zls
 
