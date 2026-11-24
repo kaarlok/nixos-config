@@ -12,5 +12,7 @@
     source = ../config/pi-agent/extensions;
     recursive = true;
   };
+  home.file.".agents/skills/socratic-tutor/SKILL.md".source =
+    ../config/pi-agent/skills/socratic-tutor/SKILL.md;
   # Themes are generated from the stylix palette in home/modules/theme.nix.
 }
