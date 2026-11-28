@@ -94,6 +94,9 @@ local servers = {
       haskell = { formattingProvider = "ormolu" },
     },
   },
+  verible = {
+    cmd = { "verible-verilog-ls", "--rules_config_search" },
+  },
 }
 
 for name, opts in pairs(servers) do
